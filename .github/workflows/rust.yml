@@ -24,9 +24,6 @@ jobs:
           source $HOME/.cargo/env
           rustup install nightly
 
-      - name: Check out code
-        uses: actions/checkout@v4
-
       - name: Build
         run: cargo build --verbose
 
