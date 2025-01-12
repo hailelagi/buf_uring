@@ -1,5 +1,6 @@
 // Buffer pool.rs
 
+use crate::page::Page;
 use crossbeam_skiplist::SkipMap;
 use io_uring::{opcode, IoUring};
 use parking_lot::RwLock;
@@ -31,21 +32,18 @@ impl BufferPool {
 
     pub async fn get_page(&self, page_id: u64) -> std::io::Result<&RwLock<Vec<u8>>> {
         if let Some(page) = self.pages.get(&page_id) {
-            return Ok(page.value());
+            todo!()
+        } else {
+            panic!()
         }
 
         // todo: should this be atomic?
-        self.evict();
-        self.load_page(page_id).await
+        //self.evict();
+        //self.load_page(page_id).await
     }
 
-    fn evict(&self) {
-        if self.pages.len() >= self.capacity {
-            let victim = self.find_lru_k_victim();
-            if let Some(page_id) = victim {
-                self.evict_page(page_id);
-            }
-        }
+    fn evict(&self) -> std::io::Result<()> {
+        todo!()
     }
 
     fn find_lru_k_victim(&self) -> Option<u64> {

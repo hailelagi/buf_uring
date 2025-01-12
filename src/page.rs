@@ -1,14 +1,15 @@
+use bytes::Bytes;
+use derive_with::With;
 use std::sync::atomic::AtomicU32;
 
-use bytes::Bytes;
 pub const PAGE_SIZE: usize = 4096;
 
-#[derive(Debug, Clone, With)]
+#[derive(Debug, With)]
 pub struct Page {
     pub page_id: u32,
-    data: Bytes,
-    pub ref_count: AtomicU32,
+    pub data: Bytes,
     pub is_dirty: bool,
+    pub ref_count: AtomicU32,
 }
 
 impl Page {
