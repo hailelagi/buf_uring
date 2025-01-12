@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: build and install xnvme
-        run: sudo ./xnvme/toolbox/pkgs/alpine-latest.sh
+        run: ./xnvme/toolbox/pkgs/alpine-latest.sh
 
       - name: install rust
         run: |
