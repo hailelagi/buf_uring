@@ -18,17 +18,20 @@ jobs:
       LD_LIBRARY_PATH: /opt/xnvme/lib
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
+      - name: build and install xnvme
+        run: sudo ./xnvme/toolbox/pkgs/alpine-latest.sh
 
-      - name: Install Rust
+      - name: install rust
         run: |
-          apk add --no-cache bash wget pkgconfig
+          apk add --no-cache bash wget pkgconfig git cmake make gcc libc-dev linux-headers
           wget https://sh.rustup.rs -O rustup-init
           chmod +x rustup-init
           ./rustup-init -y --default-toolchain nightly
           source $HOME/.cargo/env
           rustup component add miri --toolchain nightly
+
+      - name: Check out code
+        uses: actions/checkout@v4
 
       - name: Build
         run: |
@@ -44,3 +47,4 @@ jobs:
         run: |
           source $HOME/.cargo/env
           cargo miri test
+          
