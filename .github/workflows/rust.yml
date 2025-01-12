@@ -21,16 +21,22 @@ jobs:
           wget https://sh.rustup.rs -O rustup-init
           chmod +x rustup-init
           ./rustup-init -y
-          source $HOME/.cargo/env
-          rustup install nightly
+          && rustup component add miri
+
+      - name: Check out code
+        uses: actions/checkout@v4
 
       - name: Build
-        run: cargo build --verbose
+        run: source $HOME/.cargo/env
+          echo 'export PATH=$HOME/.cargo/bin:$PATH' >> $HOME/.bashrc
+          cargo build --verbose
 
-      - name: Run tests
-        run: cargo test --verbose
+      - name: Test
+        run: source $HOME/.cargo/env
+          echo 'export PATH=$HOME/.cargo/bin:$PATH' >> $HOME/.bashrc
+          cargo test --verbose
 
       - name: Run tests with Miri
         run: |
-          rustup component add miri
+          echo 'export PATH=$HOME/.cargo/bin:$PATH' >> $HOME/.bashrc
           cargo +nightly miri test
