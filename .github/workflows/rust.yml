@@ -20,23 +20,24 @@ jobs:
           apk add --no-cache bash wget
           wget https://sh.rustup.rs -O rustup-init
           chmod +x rustup-init
-          ./rustup-init -y
-          && rustup component add miri
+          ./rustup-init -y --default-toolchain nightly
+          source $HOME/.cargo/env
+          rustup component add miri --toolchain nightly
 
       - name: Check out code
         uses: actions/checkout@v4
 
       - name: Build
-        run: source $HOME/.cargo/env
-          echo 'export PATH=$HOME/.cargo/bin:$PATH' >> $HOME/.bashrc
+        run: |
+          source $HOME/.cargo/env
           cargo build --verbose
 
       - name: Test
-        run: source $HOME/.cargo/env
-          echo 'export PATH=$HOME/.cargo/bin:$PATH' >> $HOME/.bashrc
+        run: |
+          source $HOME/.cargo/env
           cargo test --verbose
 
       - name: Run tests with Miri
         run: |
-          echo 'export PATH=$HOME/.cargo/bin:$PATH' >> $HOME/.bashrc
-          cargo +nightly miri test
+          source $HOME/.cargo/env
+          cargo miri test
