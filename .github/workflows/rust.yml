@@ -13,19 +13,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container: ghcr.io/xnvme/xnvme-deps-alpine-latest:next
+    env:
+      PKG_CONFIG_PATH: /opt/xnvme/lib/pkgconfig
+      LD_LIBRARY_PATH: /opt/xnvme/lib
 
     steps:
-      - name: Install Dependencies
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
         run: |
-          apk add --no-cache bash wget
+          apk add --no-cache bash wget pkgconfig
           wget https://sh.rustup.rs -O rustup-init
           chmod +x rustup-init
           ./rustup-init -y --default-toolchain nightly
           source $HOME/.cargo/env
           rustup component add miri --toolchain nightly
-
-      - name: Check out code
-        uses: actions/checkout@v4
 
       - name: Build
         run: |
