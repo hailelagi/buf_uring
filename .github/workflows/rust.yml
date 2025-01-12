@@ -1,4 +1,4 @@
-name: Rust
+name: Rust CI
 
 on:
   push:
@@ -11,12 +11,29 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    container: ghcr.io/xnvme/xnvme-deps-alpine-latest:next
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+      - name: Install Dependencies
+        run: |
+          apk add --no-cache bash wget
+          wget https://sh.rustup.rs -O rustup-init
+          chmod +x rustup-init
+          ./rustup-init -y
+          source $HOME/.cargo/env
+          rustup install nightly
+
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: cargo build --verbose
+
+      - name: Run tests
+        run: cargo test --verbose
+
+      - name: Run tests with Miri
+        run: |
+          rustup component add miri
+          cargo +nightly miri test
